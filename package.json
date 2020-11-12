@@ -1,0 +1,9 @@
+{
+  "name": "argon",
+  "version": "0.0.0",
+  "description": "Argon",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}
