@@ -48,7 +48,7 @@ client.on("guildCreate", async guild => {
 	guild.channels.forEach(c => {
 		if (c.type === "text" && !channel) channel = c;
 	});
-	channel.createInvite({ maxAge: 0 }).then(inv => client.users.get(ownerID).send(`I have been added to **${guild.name}** | https://discord.gg/${inv.code}`));
+	channel.createInvite({ maxAge: 0 }).then(inv => logger.info(`I have been added to **${guild.name}** | https://discord.gg/${inv.code}`));
 }); 
 
 // On command
