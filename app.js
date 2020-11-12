@@ -12,6 +12,15 @@ const logger = winston.createLogger({
     ]
 });
 
+// Create error message
+async function error(message) {
+    return new MessageEmbed()
+        .setTitle('Error')
+        .setColor(0xe74c3c)
+        .setDescription(message)
+        .setFooter('Argon Error')
+}
+
 // Required for other events
 client.on('ready', async (event) => {
     logger.info('Connected');
@@ -48,6 +57,7 @@ client.on('message', async (message) => {
     // Placeholders
     var user = null;
     var member = null;
+    var reason = null;
 
     // Handle command
     switch (command) {
@@ -66,7 +76,7 @@ client.on('message', async (message) => {
             user = message.mentions.users.first();
 
             if (!user) {
-                message.channel.send('You didn\'t mention the user! Silly billy.');
+                message.channel.send(error('You didn\'t mention the user! Silly billy.'));
                 return;
             }
 
@@ -74,15 +84,26 @@ client.on('message', async (message) => {
             member = message.guild.member(user);
 
             if (!member) {
-                message.channel.send('The user does not exist in this server! Silly billy.')
+                message.channel.send(error('The user does not exist in this server! Silly billy.'))
                 return;
             }
 
+            if (args.length > 1) {
+                for (let i = 1; i < args.length - 1; i++) {
+                    reason = reason + args[i]
+                }
+            }
+
             // Kick member
-            member.kick(args[2] ? args[2] : null).then(async () => {
-                message.channel.send(`Successfully kicked user ${user.tag}`)
+            member.kick(reason).then(async () => {
+                message.channel.send(new MessageEmbed()
+                    .setTitle('Kick User')
+                    .setColor(0x2ecc71)
+                    .setDescription(`Successfully kicked user ${user.tag}`)
+                    .setFooter('Argon · Moderation')
+                )
             }).catch(async (error) => {
-                message.channel.send(`Unable to kick user ${user.tag}.`)
+                message.channel.send(error(`Unable to kick user ${user.tag}.`))
                 logger.error(`Unable to kick user ${user.tag}: ${error}`)
             })
 
@@ -93,7 +114,7 @@ client.on('message', async (message) => {
             user = message.mentions.users.first();
 
             if (!user) {
-                message.channel.send('You didn\'t mention the user to kick! Silly billy.');
+                message.channel.send(error('You didn\'t mention the user to kick! Silly billy.'));
                 return;
             }
 
@@ -101,19 +122,30 @@ client.on('message', async (message) => {
             member = message.guild.member(user);
 
             if (!member) {
-                message.channel.send('That user doesn\'t exist in this server! Silly billy.');
+                message.channel.send(error('That user doesn\'t exist in this server! Silly billy.'));
                 return;
+            }
+
+            if (args.length > 1) {
+                for (let i = 1; i < args.length - 1; i++) {
+                    reason = reason + args[i]
+                }
+            } else {
+                reason = 'The ban hammer has spoken.'
             }
 
             // Ban member
             member.ban({
-                reason: args[2] ? args[2] : 'The ban hammer has spoken!' // If no reason is specified, set
-                                                                         // the reason to 'The ban hammer has
-                                                                         // spoken.
+                reason: reason // If no reason is specified, set the reason to 'The ban hammer has spoken'.
             }).then(async () => {
-                message.channel.send(`Successfully banned ${user.tag}`);
+                message.channel.send(new MessageEmbed()
+                    .setTitle('Ban User')
+                    .setColor(0xe67e22)
+                    .setDescription(`Successfully banned user ${user.tag}`)
+                    .setFooter('Argon · Moderation')
+                );
             }).catch(async (error) => {
-                message.channel.send(`Unable to ban ${user.tag}`);
+                message.channel.send(error(`Unable to ban ${user.tag}`));
                 logger.error(`Unable to ban user ${user.tag}: ${error}`);
             });
     }
