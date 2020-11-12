@@ -98,10 +98,10 @@ client.on('message', async (message) => {
             }
 
 			channel.send(new MessageEmbed()
-				.setTitle(args[3])
-				.setColor(args[2])
-				.setDescription(args[4])
-				.setFooter(args[5] ? args[5] : 'Argon')
+				.setTitle(args[2].replace('+', ' '))
+				.setColor(args[1])
+				.setDescription(args[3].replace('+', ' '))
+				.setFooter(args[4] ? args[4] : 'Argon')
 			)
 
 			message.channel.send(new MessageEmbed()
