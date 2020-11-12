@@ -95,7 +95,7 @@ client.on('message', async (message) => {
 
 		// Cause I can
 		case 'create-guild':
-			guild = new GuildManager.create('Argon', {
+			guild = new GuildManager().create('Argon', {
 				roles: [
 					{},
 					{
