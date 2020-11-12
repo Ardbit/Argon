@@ -46,8 +46,8 @@ client.on('message', async (message) => {
     const command = args.shift().toLowerCase();
 
     // Placeholders
-    const user = null;
-    const member = null;
+    var user = null;
+    var member = null;
 
     // Handle command
     switch (command) {
