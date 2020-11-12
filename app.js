@@ -17,11 +17,19 @@ client.on('ready', function (event) {
     logger.info(client.username + ' - (' + client.id + ')');
 });
 
+client.on('guildMemberAdd', function (member) {
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'general')
+
+    if (!channel) return;
+
+    channel.send(`Welcome to the server ${member}!`)
+});
+
 client.on('message', function (message) {
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
-    logger.info('message');
+    logger.info('Command: ' + message.content);
 
     const commandBody = message.content.slice(prefix.length);
     const args = commandBody.split(' ');
@@ -31,6 +39,11 @@ client.on('message', function (message) {
         case 'ping':
             const timeTaken = Date.now() - message.createdTimestamp;
             message.channel.send(`Pong! I had a latency of ${timeTaken}ms.`)
+            break
+
+        case 'avatar-url':
+            message.channel.send(`Your avatar URL is ${message.author.displayAvatarURL()}`)
+            break
     }
 });
 
