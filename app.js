@@ -18,14 +18,14 @@ function ArgonError(message) {
         .setTitle('Error')
         .setColor(0xe74c3c)
         .setDescription(message)
-        .setFooter('Argon Error')
+        .setFooter('Argon · Error')
 }
 
 // Required for other events
 client.on('ready', async (event) => {
     logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(client.username + ' - (' + client.id + ')');
+
+    client.user.setActivity('to commands | .help', {type: 'LISTENING'})
 });
 
 // Server user join message
@@ -38,6 +38,7 @@ client.on('guildMemberAdd', async (member) => {
         .setTitle('Welcome')
         .setColor(0x27ae60)
         .setDescription(`${member} has joined the server!`)
+        .setFooter('Argon')
     );
 });
 
