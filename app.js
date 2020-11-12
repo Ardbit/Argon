@@ -1,16 +1,15 @@
 const Discord = require('discord.js');
-const logger = require('winston');
+const winston = require('winston');
 
 const client = new Discord.Client();
 const prefix = '.'
 
-client.login(process.env.DISCORD_TOKEN);
-
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
+const logger = winston.createLogger({
+    format: winston.format.simple(),
+    transports: [
+        new transports.Console()
+    ]
 });
-logger.level = 'debug';
 
 client.on('ready', function (event) {
     logger.info('Connected');
@@ -31,6 +30,8 @@ client.on('message', function (message) {
     switch (command) {
         case 'ping':
             const timeTaken = Date.now() - message.createdTimestamp;
-            message.send(`Pong! I had a latency of ${timeTaken}ms.`)
+            message.channel.send(`Pong! I had a latency of ${timeTaken}ms.`)
     }
 });
+
+client.login(process.env.DISCORD_TOKEN);
