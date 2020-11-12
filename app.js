@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 const winston = require('winston');
 
-const client = new Discord.Client();
+const client = new Client();
 const prefix = '.'
 
 const logger = winston.createLogger({
@@ -11,21 +11,25 @@ const logger = winston.createLogger({
     ]
 });
 
-client.on('ready', function (event) {
+client.on('ready', async (event) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.username + ' - (' + client.id + ')');
 });
 
-client.on('guildMemberAdd', function (member) {
+client.on('guildMemberAdd', async (member) {
     const channel = member.guild.channels.cache.find(ch => ch.name === 'general')
 
     if (!channel) return;
 
-    channel.send(`Welcome to the server ${member}!`)
+    channel.send(new MessageEmbed()
+        .setTitle('Welcome')
+        .setColor(0x27ae60)
+        .setDescription(`${member} has joined the server!`)
+    );
 });
 
-client.on('message', function (message) {
+client.on('message', async (message) {
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
@@ -44,6 +48,55 @@ client.on('message', function (message) {
         case 'avatar-url':
             message.channel.send(`Your avatar URL is ${message.author.displayAvatarURL()}`)
             break
+
+        // Moderation
+        case 'kick':
+            const user = message.mentions.users.first();
+
+            if (!user) {
+                message.channel.send('You didn\'t mention the user! Silly billy.');
+                return;
+            }
+
+            const member = message.guild.member(user);
+
+            if (!member) {
+                message.channel.send('The user does not exist in this server! Silly billy.')
+                return;
+            }
+
+            member.kick(args[2] ? args[2] : null).then(async () => {
+                message.channel.send(`Successfully kicked user ${user.tag}`)
+            }).catch(async (error) => {
+                message.channel.send(`Unable to kick user ${user.tag}.`)
+                logger.error(`Unable to kick user ${user.tag}: ${error}`)
+            })
+
+            break
+
+        case 'ban':
+            const user = message.mentions.users.first();
+
+            if (!user) {
+                message.channel.send('You didn\'t mention the user to kick! Silly billy.');
+                return;
+            }
+
+            const member = message.guild.member(user);
+
+            if (!member) {
+                message.channel.send('That user doesn\'t exist in this server! Silly billy.');
+                return;
+            }
+
+            member.ban({
+                reason: args[2] ? args[2] : 'The ban hammer has spoken!'
+            }).then(async () => {
+                message.channel.send(`Successfully banned ${user.tag}`);
+            }).catch(async (error) => {
+                message.channel.send(`Unable to ban ${user.tag}`);
+                logger.error(`Unable to ban user ${user.tag}: ${error}`);
+            });
     }
 });
 
