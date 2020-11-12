@@ -12,13 +12,13 @@ var bot = new Discord.Client({
     autorun: true
 });
 
-bot.on('ready', function (evt) {
+bot.on('ready', function (event) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
-bot.on('message', function (user, userID, channelID, message, evt) {
+bot.on('message', function (user, userID, channelID, message, event) {
     logger.info('msg');
     bot.sendMessage({
         to: channelID,

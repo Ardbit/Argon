@@ -1,9 +1,19 @@
 {
   "name": "argon",
   "version": "0.0.0",
-  "description": "Argon",
+  "description": "Versatile Discord Bot for Moderation and General Use",
   "main": "app.js",
   "author": {
-    "name": ""
-  }
+    "name": "ardbit"
+  },
+  "repository": {
+    "url": "https://github.com/Ardbit/Argon.git"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "winston": "3.3.3",
+    "discord.io": "2.5.3"
+  }  
 }
