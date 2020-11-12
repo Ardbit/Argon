@@ -1,4 +1,4 @@
-const { Client, MessageEmbed } = require('discord.js');
+const { Client, MessageEmbed, GuildManager } = require('discord.js');
 const winston = require('winston');
 
 const client = new Client();
