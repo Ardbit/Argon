@@ -13,7 +13,7 @@ const logger = winston.createLogger({
 });
 
 // Create error message
-async function error(message) {
+async function ArgonError(message) {
     return new MessageEmbed()
         .setTitle('Error')
         .setColor(0xe74c3c)
@@ -76,7 +76,7 @@ client.on('message', async (message) => {
             user = message.mentions.users.first();
 
             if (!user) {
-                message.channel.send(error('You didn\'t mention the user! Silly billy.'));
+                message.channel.send(ArgonError('You didn\'t mention the user! Silly billy.'));
                 return;
             }
 
@@ -84,7 +84,7 @@ client.on('message', async (message) => {
             member = message.guild.member(user);
 
             if (!member) {
-                message.channel.send(error('The user does not exist in this server! Silly billy.'))
+                message.channel.send(ArgonError('The user does not exist in this server! Silly billy.'))
                 return;
             }
 
@@ -103,7 +103,7 @@ client.on('message', async (message) => {
                     .setFooter('Argon · Moderation')
                 )
             }).catch(async (error) => {
-                message.channel.send(error(`Unable to kick user ${user.tag}.`))
+                message.channel.send(ArgonError(`Unable to kick user ${user.tag}.`))
                 logger.error(`Unable to kick user ${user.tag}: ${error}`)
             })
 
@@ -114,7 +114,7 @@ client.on('message', async (message) => {
             user = message.mentions.users.first();
 
             if (!user) {
-                message.channel.send(error('You didn\'t mention the user to kick! Silly billy.'));
+                message.channel.send(ArgonError('You didn\'t mention the user to kick! Silly billy.'));
                 return;
             }
 
@@ -122,7 +122,7 @@ client.on('message', async (message) => {
             member = message.guild.member(user);
 
             if (!member) {
-                message.channel.send(error('That user doesn\'t exist in this server! Silly billy.'));
+                message.channel.send(ArgonError('That user doesn\'t exist in this server! Silly billy.'));
                 return;
             }
 
@@ -145,7 +145,7 @@ client.on('message', async (message) => {
                     .setFooter('Argon · Moderation')
                 );
             }).catch(async (error) => {
-                message.channel.send(error(`Unable to ban ${user.tag}`));
+                message.channel.send(ArgonError(`Unable to ban ${user.tag}`));
                 logger.error(`Unable to ban user ${user.tag}: ${error}`);
             });
     }
