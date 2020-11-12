@@ -4,9 +4,7 @@ const winston = require('winston');
 const client = new Client();
 const prefix = '.'
 
-const user;
-const member;
-
+// Create Logger
 const logger = winston.createLogger({
     format: winston.format.simple(),
     transports: [
@@ -14,12 +12,14 @@ const logger = winston.createLogger({
     ]
 });
 
+// Required for other events
 client.on('ready', async (event) => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.username + ' - (' + client.id + ')');
 });
 
+// Server user join message
 client.on('guildMemberAdd', async (member) => {
     const channel = member.guild.channels.cache.find(ch => ch.name === 'general')
 
@@ -32,16 +32,24 @@ client.on('guildMemberAdd', async (member) => {
     );
 });
 
+// On command
 client.on('message', async (message) => {
+    // Skip command if it is from a bot or doesn't start with the prefix
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
     logger.info('Command: ' + message.content);
 
+    // Command Variables
     const commandBody = message.content.slice(prefix.length);
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
 
+    // Placeholders
+    const user = null;
+    const member = null;
+
+    // Handle command
     switch (command) {
         case 'ping':
             const timeTaken = Date.now() - message.createdTimestamp;
@@ -54,6 +62,7 @@ client.on('message', async (message) => {
 
         // Moderation
         case 'kick':
+            // Get user
             user = message.mentions.users.first();
 
             if (!user) {
@@ -61,6 +70,7 @@ client.on('message', async (message) => {
                 return;
             }
 
+            // Get member
             member = message.guild.member(user);
 
             if (!member) {
@@ -68,6 +78,7 @@ client.on('message', async (message) => {
                 return;
             }
 
+            // Kick member
             member.kick(args[2] ? args[2] : null).then(async () => {
                 message.channel.send(`Successfully kicked user ${user.tag}`)
             }).catch(async (error) => {
@@ -78,6 +89,7 @@ client.on('message', async (message) => {
             break
 
         case 'ban':
+            // Get user
             user = message.mentions.users.first();
 
             if (!user) {
@@ -85,6 +97,7 @@ client.on('message', async (message) => {
                 return;
             }
 
+            // Get member
             member = message.guild.member(user);
 
             if (!member) {
@@ -92,8 +105,11 @@ client.on('message', async (message) => {
                 return;
             }
 
+            // Ban member
             member.ban({
-                reason: args[2] ? args[2] : 'The ban hammer has spoken!'
+                reason: args[2] ? args[2] : 'The ban hammer has spoken!' // If no reason is specified, set
+                                                                         // the reason to 'The ban hammer has
+                                                                         // spoken.
             }).then(async () => {
                 message.channel.send(`Successfully banned ${user.tag}`);
             }).catch(async (error) => {
@@ -103,4 +119,5 @@ client.on('message', async (message) => {
     }
 });
 
+// Logon to discord app
 client.login(process.env.DISCORD_TOKEN);
