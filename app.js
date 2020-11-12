@@ -11,13 +11,13 @@ const logger = winston.createLogger({
     ]
 });
 
-client.on('ready', async (event) {
+client.on('ready', async (event) => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.username + ' - (' + client.id + ')');
 });
 
-client.on('guildMemberAdd', async (member) {
+client.on('guildMemberAdd', async (member) => {
     const channel = member.guild.channels.cache.find(ch => ch.name === 'general')
 
     if (!channel) return;
@@ -29,7 +29,7 @@ client.on('guildMemberAdd', async (member) {
     );
 });
 
-client.on('message', async (message) {
+client.on('message', async (message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
