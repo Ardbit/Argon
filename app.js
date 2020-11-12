@@ -25,7 +25,7 @@ function ArgonError(message) {
 client.on('ready', async (event) => {
     logger.info('Connected');
 
-    client.user.setActivity('to commands | .help', {type: 'LISTENING'})
+    client.user.setActivity(`${client.guilds.length} servers | .help`, {type: 'WATCHING'})
 });
 
 // Server user join message
