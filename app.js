@@ -13,7 +13,7 @@ const logger = winston.createLogger({
 });
 
 // Create error message
-async function ArgonError(message) {
+function ArgonError(message) {
     return new MessageEmbed()
         .setTitle('Error')
         .setColor(0xe74c3c)
