@@ -4,6 +4,9 @@ const winston = require('winston');
 const client = new Client();
 const prefix = '.'
 
+const user;
+const member;
+
 const logger = winston.createLogger({
     format: winston.format.simple(),
     transports: [
@@ -51,14 +54,14 @@ client.on('message', async (message) => {
 
         // Moderation
         case 'kick':
-            const user = message.mentions.users.first();
+            user = message.mentions.users.first();
 
             if (!user) {
                 message.channel.send('You didn\'t mention the user! Silly billy.');
                 return;
             }
 
-            const member = message.guild.member(user);
+            member = message.guild.member(user);
 
             if (!member) {
                 message.channel.send('The user does not exist in this server! Silly billy.')
@@ -75,14 +78,14 @@ client.on('message', async (message) => {
             break
 
         case 'ban':
-            const user = message.mentions.users.first();
+            user = message.mentions.users.first();
 
             if (!user) {
                 message.channel.send('You didn\'t mention the user to kick! Silly billy.');
                 return;
             }
 
-            const member = message.guild.member(user);
+            member = message.guild.member(user);
 
             if (!member) {
                 message.channel.send('That user doesn\'t exist in this server! Silly billy.');
