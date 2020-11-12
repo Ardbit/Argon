@@ -7,7 +7,7 @@ const prefix = '.'
 const logger = winston.createLogger({
     format: winston.format.simple(),
     transports: [
-        new transports.Console()
+        new winston.transports.Console()
     ]
 });
 
