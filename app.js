@@ -1,5 +1,10 @@
-var Discord = require('discord.io');
-var logger = require('winston');
+const Discord = require('discord.js');
+const logger = require('winston');
+
+const client = new Discord.Client();
+const prefix = '.'
+
+client.login(process.env.DISCORD_TOKEN);
 
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -7,23 +12,25 @@ logger.add(new logger.transports.Console, {
 });
 logger.level = 'debug';
 
-logger.info('Starting bot...')
-
-var bot = new Discord.Client({
-    token: process.env.DISCORD_TOKEN,
-    autorun: true
-});
-
-bot.on('ready', function (event) {
+client.on('ready', function (event) {
     logger.info('Connected');
     logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+    logger.info(client.username + ' - (' + client.id + ')');
 });
 
-bot.on('message', function (user, userID, channelID, message, event) {
-    logger.info('msg');
-    bot.sendMessage({
-        to: channelID,
-        message: 'I am a bot'
-    });
+client.on('message', function (message) {
+    if (message.author.bot) return;
+    if (!message.content.startsWith(prefix)) return;
+
+    logger.info('message');
+
+    const commandBody = message.content.slice(prefix.length);
+    const args = commandBody.split(' ');
+    const command = args.shift().toLowerCase();
+
+    switch (command) {
+        case 'ping':
+            const timeTaken = Date.now() - message.createdTimestamp;
+            message.send(`Pong! I had a latency of ${timeTaken}ms.`)
+    }
 });
