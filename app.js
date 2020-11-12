@@ -3,7 +3,6 @@ const winston = require('winston');
 
 const client = new Client();
 const prefix = '.'
-let guild = null;
 
 // Create Logger
 const logger = winston.createLogger({
@@ -43,14 +42,6 @@ client.on('guildMemberAdd', async (member) => {
 	);
 });
 
-client.on("guildCreate", async guild => {
-	var channel;
-	guild.channels.forEach(c => {
-		if (c.type === "text" && !channel) channel = c;
-	});
-	channel.createInvite({ maxAge: 0 }).then(inv => logger.info(`I have been added to **${guild.name}** | https://discord.gg/${inv.code}`));
-}); 
-
 // On command
 client.on('message', async (message) => {
 	// Skip command if it is from a bot or doesn't start with the prefix
@@ -68,6 +59,7 @@ client.on('message', async (message) => {
 	var user = null;
 	var member = null;
 	var reason = null;
+	var channel = null;
 
 	// Handle command
 	switch (command) {
@@ -93,17 +85,31 @@ client.on('message', async (message) => {
 			message.channel.send(`Your avatar URL is ${message.author.displayAvatarURL()}`)
 			break
 
-		// Cause I can
-		case 'create-guild':
-			guild = new GuildManager().create('Argon', {
-				roles: [
-					{},
-					{
-						name: 'Developer',
-						permissions: 8
-					}
-				]
-			})
+		case 'send-embed':
+			channel = message.mentions.channels.first();
+
+			if (!channel) {
+				message.channel.send(ArgonError('You didn\'t mention the channel to send it in.'))
+				return;
+			}
+
+			if (!args > 4) {
+				message.channel.send(ArgonError('You didn\'t specify all required arguments.\nThe command is: send-embed <channel> <color (hex)> <title> <description> [footer]'))
+            }
+
+			channel.send(new MessageEmbed()
+				.setTitle(args[3])
+				.setColor(args[2])
+				.setDescription(args[4])
+				.setFooter(args[5] ? args[5] : 'Argon')
+			)
+
+			message.channel.send(new MessageEmbed()
+				.setTitle('Success')
+				.setColor(0x2ecc71)
+				.setDescription(`Successfully sent an embed in ${args[1]}`)
+				.setFooter('Argon · Message Embed')
+			)
 			break
 
 		// Moderation
@@ -112,7 +118,7 @@ client.on('message', async (message) => {
 			user = message.mentions.users.first();
 
 			if (!user) {
-				message.channel.send(ArgonError('You didn\'t mention the user! Silly billy.'));
+				message.channel.send(ArgonError('You didn\'t mention the user!'));
 				return;
 			}
 
@@ -120,7 +126,7 @@ client.on('message', async (message) => {
 			member = message.guild.member(user);
 
 			if (!member) {
-				message.channel.send(ArgonError('The user does not exist in this server! Silly billy.'))
+				message.channel.send(ArgonError('The user does not exist in this server!'))
 				return;
 			}
 
@@ -150,7 +156,7 @@ client.on('message', async (message) => {
 			user = message.mentions.users.first();
 
 			if (!user) {
-				message.channel.send(ArgonError('You didn\'t mention the user to kick! Silly billy.'));
+				message.channel.send(ArgonError('You didn\'t mention the user to kick!'));
 				return;
 			}
 
@@ -158,7 +164,7 @@ client.on('message', async (message) => {
 			member = message.guild.member(user);
 
 			if (!member) {
-				message.channel.send(ArgonError('That user doesn\'t exist in this server! Silly billy.'));
+				message.channel.send(ArgonError('That user doesn\'t exist in this server!'));
 				return;
 			}
 
