@@ -3,6 +3,7 @@ const winston = require('winston');
 
 const client = new Client();
 const prefix = '.'
+let guild = null;
 
 // Create Logger
 const logger = winston.createLogger({
@@ -78,7 +79,7 @@ client.on('message', async (message) => {
 				.setColor(0x9b59b6)
 				.setDescription('A Versatile and Powerful discord bot for all use cases.')
 				.addFields(
-					{ name: 'FAQ', value: '' }
+					{ name: 'FAQ', value: 'Something awesome' }
 				)
 			)
 			break
@@ -94,7 +95,7 @@ client.on('message', async (message) => {
 
 		// Cause I can
 		case 'create-guild':
-			GuildManager.create('Argon', {
+			guild = new GuildManager.create('Argon', {
 				roles: [
 					{},
 					{
