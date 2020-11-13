@@ -64,7 +64,7 @@ client.on('guildCreate', async (guild) => {
             })
 
             dbclient.query('INSERT INTO guilds (id, prefix) VALUES ($1, $2)', [guild.id, '.'], (error, res) => {
-                if (shouldAbort(error) return;
+                if (shouldAbort(error)) return;
 
                 done()
             })
