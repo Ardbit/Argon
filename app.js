@@ -35,15 +35,48 @@ client.on('ready', async () => {
         .catch(console.error);
 });
 
-client.on('guildCreate', async () => {
+client.on('guildCreate', async (guild) => {
+    await db.connect((error, client, done) => {
+        const shouldAbort = (error, client, done) => {
+            if (error) {
+                logger.error(`Error in transaction`);
+                client.query('ROLLBACK', error => {
+                    if (error) {
+                        logger.error(`Error when rolling back client: ${error.stack}`)
+                    }
 
-})
+                    done()
+                })
+            }
+
+            return !!error;
+        }
+
+        client.query('BEGIN', error => {
+            if (shouldAbort(error, client, done)) return
+
+            client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, prefix text)', (error, res) => {
+                if (shouldAbort(error, client, done)) return;
+
+                client.query('COMMIT', (error, res) => {
+                    if (shouldAbort(error, client, done)) return;
+                })
+            })
+
+            client.query('INSERT INTO guilds (id, prefix) VALUES ($1, $2)', [guild.id, '.'], (error, res) => {
+                if (shouldAbort(error, client, done)) return;
+
+                done()
+            })
+        })
+    })
+});
 
 client.on('message', async (message) => {
     if (message.author.bot) return;
 
     const prefix = await db.connect((error, client, done) => {
-        const shouldAbort = error, client, done => {
+        const shouldAbort = (error, client, done) => {
             if (error) {
                 logger.error(`Error in transaction`);
                 client.query('ROLLBACK', error => {
