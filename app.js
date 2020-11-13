@@ -38,7 +38,7 @@ client.on('ready', async () => {
 client.on('message', async (message) => {
     if (message.author.bot) return;
 
-    await pool.connect((error, client, done) => {
+    const prefix = await db.connect((error, client, done) => {
         const shouldAbort = error => {
             if (error) {
                 logger.error(`Error in transaction`);
@@ -61,9 +61,9 @@ client.on('message', async (message) => {
                 if (shouldAbort(error)) return;
 
                 if (!res.row[0].prefix) {
-                    const prefix = '.';
+                    return '.';
                 } else {
-                    const prefix = res.rows[0].prefix;
+                    return res.rows[0].prefix;
                 }
 
                 done()
@@ -77,8 +77,8 @@ client.on('message', async (message) => {
 
     if (!message.content.startsWith(prefix)) return;
 
-    const commandfile = client.commands.get(cmd.slice(prefix.length)) || bot.commands.get(bot.aliases.get(cmd.slice(prefix.length)));
-    commandfile.run(client, message, args);
+    const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
+    commandfile.run(client, message, args, logger);
 });
 
 // EOF
