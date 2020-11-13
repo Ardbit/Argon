@@ -39,7 +39,7 @@ client.on('message', async (message) => {
     if (message.author.bot) return;
 
     const prefix = await db.connect((error, client, done) => {
-        const shouldAbort = error => {
+        const shouldAbort = error, client, done => {
             if (error) {
                 logger.error(`Error in transaction`);
                 client.query('ROLLBACK', error => {
@@ -55,10 +55,10 @@ client.on('message', async (message) => {
         }
 
         client.query('BEGIN', error => {
-            if (shouldAbort(error)) return
+            if (shouldAbort(error, client, done)) return
 
             client.query('SELECT prefix FROM guilds WHERE guildId = $1 RETURNING prefix', message.guild.id, (error, res) => {
-                if (shouldAbort(error)) return;
+                if (shouldAbort(error, client, done)) return;
 
                 if (!res.row[0].prefix) {
                     return '.';
