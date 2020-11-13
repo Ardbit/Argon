@@ -30,7 +30,7 @@ loadCommands(client);
 client.on('ready', async () => {
     logger.info(`Connected as ${client.user.tag}`)
 
-    client.user.setActivity(`${} servers | argon.js.org`, { type: 'WATCHING' })
+    client.user.setActivity(`${client.guilds.cache.size} servers | argon.js.org`, { type: 'WATCHING' })
         .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
         .catch(console.error);
 });
