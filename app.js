@@ -1,4 +1,4 @@
-const { Client } = require('discord.js');
+const { Client, Collection } = require('discord.js');
 const winston = require('winston');
 const { Pool } = require('pg');
 
@@ -21,8 +21,8 @@ const db = new Pool({
 });
 
 // Commands
-client.commands = new Discord.Collection();
-client.aliases = new Discord.Collection();
+client.commands = new Collection();
+client.aliases = new Collection();
 
 loadCommands(client);
 
