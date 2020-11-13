@@ -100,7 +100,7 @@ client.on('message', async (message) => {
                             'help\n' +
                             'kick <user>\n' +
                             'ban <user>\n' +
-                            ''
+                            'send-embed <#channel> <color (hex)> <title> <description> [footer]\n'
 					},
                     {
                         name: 'Description',
@@ -108,7 +108,8 @@ client.on('message', async (message) => {
                         value: 'Displays information about Argon.\n' +
                             'Shows this help embed.\n' +
                             'Kicks the mentioned user.\n' +
-                            'Bans the mentioned user' +
+                            'Bans the mentioned user\n' +
+                            'Sends an embed to the mentioned channel.\n'
                             
                     },
                     {
@@ -118,6 +119,7 @@ client.on('message', async (message) => {
                             '.help\n' +
                             '.kick @Kick-me#1234\n' +
                             '.ban @Ban-me#4321\n' +
+                            '.send-embed #testing124 #6e6e6e This+Is+A+Wonderful+Title What+A+Beautiful+Description!!!\n'
                     }
                 )
             )
