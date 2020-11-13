@@ -35,6 +35,10 @@ client.on('ready', async () => {
         .catch(console.error);
 });
 
+client.on('guildCreate', async () => {
+
+})
+
 client.on('message', async (message) => {
     if (message.author.bot) return;
 
