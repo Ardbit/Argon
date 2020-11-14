@@ -35,7 +35,7 @@ client.on('ready', async () => {
         .catch(console.error);
 
     await db.connect((error, client, done) => {
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text, UNIQUE id)', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
@@ -133,7 +133,7 @@ client.on('message', async (message) => {
 
     const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
     commandfile.run(client, message, args, logger);
-});
+}).catch(error => logger.error(error));
 
 // EOF
 client.login(process.env.DISCORD_TOKEN);
