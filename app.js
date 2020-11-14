@@ -120,7 +120,7 @@ client.on('message', async (message) => {
                     return;
                 }
 
-                logger.log('DEBUG: ' + result.rows)
+                console.log(result.rows)
 
                 return result.rows[0];
                 done();
