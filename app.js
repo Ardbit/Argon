@@ -88,7 +88,11 @@ client.on('message', async (message) => {
     try {
         if (message.author.bot) return;
 
-        const config = await db.connect((error, client, done) => {
+        const config = {
+            prefix: '.'
+        }
+
+        await db.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
@@ -114,13 +118,13 @@ client.on('message', async (message) => {
                 return result.rows;
             })
 
-            return client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+            client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
                 }
 
-                return result.rows[0]['config'];
+                config = result.rows[0]['config'];
                 done();
             });
         });
