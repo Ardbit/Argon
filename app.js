@@ -133,7 +133,7 @@ client.on('message', async (message) => {
 
     const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
     commandfile.run(client, message, args, logger);
-}).catch(error => logger.error(error));
+}.catch (error => logger.error(error)));
 
 // EOF
 client.login(process.env.DISCORD_TOKEN);
