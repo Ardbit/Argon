@@ -35,7 +35,7 @@ client.on('ready', async () => {
         .catch(console.error);
 
     await db.connect((error, client, done) => {
-        client.query('CREATE TABLE guilds (id bigint, config text) ON CONFLICT DO NOTHING', (error, result) => {
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
@@ -92,15 +92,6 @@ client.on('message', async (message) => {
             logger.error(error);
             return;
         }
-
-        client.query('CREATE TABLE guilds (id bigint, config json) ON CONFLICT DO NOTHING', (error, result) => {
-            if (error) {
-                logger.error(error)
-                return;
-            }
-
-            return result.rows;
-        })
 
         client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
             done();
