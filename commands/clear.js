@@ -23,7 +23,7 @@ module.exports.run = async (client, message, args, logger) => {
         .catch(error => ArgonError(message, `Unable to delete messages:\n${error}`));
 }
 
-modules.exports.config = {
+module.exports.config = {
     name: 'clear',
     aliases: [
         'delete'
