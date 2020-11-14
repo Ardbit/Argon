@@ -35,7 +35,6 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            await logger.info(result.rows)
             plugins = result.rows[0]['plugins'];
             done();
         });
