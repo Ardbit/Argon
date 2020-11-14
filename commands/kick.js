@@ -3,12 +3,14 @@ const { ArgonError, ArgonSuccess } = require('../utils/messages');
 module.exports.run = async (message, args) => {
     if (!message.member.hasPermission('KICK_MEMBERS')) {
         ArgonError(message, 'Insufficient privileges.', true)
+        return
     }
 
     const user = message.mentions.members.first();
 
     if (!user) {
         ArgonError(message, 'User does not exist.', true)
+        return
     }
 
     let reason = ' ';
