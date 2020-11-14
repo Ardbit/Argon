@@ -127,21 +127,13 @@ client.on('message', async (message) => {
             });
         });
 
-        if (!config) {
-            logger.error(`Failed getting config for server '${message.guild.id}'. Defaulting to '.'`)
-            const prefix = '.';
-            logger.info(`Config for server '${message.guild.id}' = ${config}`)
-        } else {
-            const prefix = config.prefix;
-        }
-
         const messageArray = message.content.split(' ');
         const cmd = messageArray[0];
         const args = messageArray.slice(1);
 
-        if (!message.content.startsWith(prefix)) return;
+        if (!message.content.startsWith(config.prefix || '.')) return;
 
-        const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
+        const commandfile = client.commands.get(cmd.slice(config.prefix.length || '.'.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
         commandfile.run(client, message, args, logger);
     } catch (error) {
         logger.error(error);
