@@ -11,8 +11,10 @@ module.exports.run = async (client, message, args, logger) => {
         deleteCount = 1;
     } else if (deleteCount < 1) {
         ArgonError(message, 'Delete count cannot be less than 1.', true)
+        return
     } else if (deleteCount > 100) {
         ArgonError(message, 'Delete count cannot be greater than 100.', true)
+        return
     }
 
     message.channel.bulkDelete(1) // Fix over 100 messages error.
