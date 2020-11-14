@@ -2,7 +2,7 @@ const { Client } = require('discord.js');
 const winston = require('winston');
 const { Pool } = require('pg');
 
-modules.exports = {
+module.exports = {
     'PLUGIN_JSON': {
         'moderation': {
             'warns': {},
