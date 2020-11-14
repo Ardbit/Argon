@@ -1,5 +1,5 @@
 const { ArgonError, ArgonSuccess } = require('../utils/messages');
-const { client, database } = require('../utils/defaults');
+const { database } = require('../utils/defaults');
 const { MessageEmbed } = require('discord.js');
 
 module.exports.run = async (message, args) => {
