@@ -35,7 +35,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            logger.info(result.rows)
+            console.log('1234567890asdfghjkl::\n' + result.rows)
             plugins = result.rows[0]['plugins'];
             done();
         });
