@@ -87,6 +87,8 @@ client.on('message', async (message) => {
             prefix: '.'
         }
 
+        let message = message;
+
         await database.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
