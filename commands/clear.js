@@ -1,4 +1,3 @@
-const { MessageEmbed } = require('discord.js');
 const { ArgonError, ArgonSuccess } = require('../utils/messages')
 
 module.exports.run = async (client, message, args, logger) => {
@@ -11,14 +10,14 @@ module.exports.run = async (client, message, args, logger) => {
     if (!deleteCount) {
         deleteCount = 1;
     } else if (deleteCount < 1) {
-        ArgonError(message, 'Delete count cannot be less than 1.')
+        ArgonError(message, 'Delete count cannot be less than 1.', true)
     } else if (deleteCount > 100) {
-        ArgonError(message, 'Delete count cannot be greater than 100.')
+        ArgonError(message, 'Delete count cannot be greater than 100.', true)
     }
 
     message.channel.bulkDelete(deleteCount + 1)
         .then(msg => {
-            ArgonSuccess(message, `Successfully deleted ${deleteCount} messages.`)
+            ArgonSuccess(message, `Successfully deleted ${deleteCount} messages.`, true)
         })
         .catch(error => ArgonError(message, `Unable to delete messages:\n${error}`));
 }
