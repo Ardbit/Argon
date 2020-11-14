@@ -3,13 +3,16 @@ const winston = require('winston');
 const { Pool } = require('pg');
 
 module.exports = {
-    'PLUGIN_JSON': {
+    'PLUGIN_JSON_DB': {
         'moderation': {
             'warns': {},
             'kicks': {},
             'bans': {}
         }
     },
+    'CONFIG_JSON_DB': {
+        'prefix': '.'
+    }
 }
 
 module.exports.client = new Client();

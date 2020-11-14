@@ -50,7 +50,7 @@ client.on('guildCreate', async (guild) => {
             return;
         }
 
-        client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, { prefix: '.' }, defaults.PLUGIN_JSON], (error, result) => {
+        client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
 
             if (error) {
                 logger.error(error);
@@ -71,7 +71,7 @@ client.on('guildCreate', async (guild) => {
         })
     });
 
-    guild.systemChannel.send(new MessageEmbed()
+    guild.channels.cache.get(guild.systemChannelID).send(new MessageEmbed()
         .setTitle('Thank you')
         .setColor(0xEFCA08)
         .setDescription('Thank you for adding me!\n`-` The default prefix is `.`\n`-` Type `.help` for information.\n`-` You can customise settings with `.settings`.\n`-` If you need help, join our support server at https://argon.js.org/support \n**By integrating Argon into your server, you agree to our Terms and Conditions: https://argon.js.org/tos**')
@@ -92,7 +92,7 @@ client.on('message', async (message) => {
                 return;
             }
 
-            client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
+            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
