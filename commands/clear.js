@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const { ArgonError, ArgonSuccess } = require('../utils/messages')
 
 module.exports.run = async (client, message, args, logger) => {
-    if (!message.author.member.hasPermission('MANAGE_MESSAGES')) {
+    if (!message.member.hasPermission('MANAGE_MESSAGES')) {
         ArgonError(message, 'Insufficient privileges.', true)
     }
 
