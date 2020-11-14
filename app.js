@@ -128,6 +128,7 @@ client.on('message', async (message) => {
         if (!config) {
             logger.error(`Failed getting config for server '${message.guild.id}'. Defaulting to '.'`)
             const prefix = '.';
+            logger.info(`Config for server '${message.guild.id}' = ${config}`)
         } else {
             const prefix = config.prefix;
         }
