@@ -35,7 +35,7 @@ client.on('ready', async () => {
         .catch(console.error);
 
     await db.connect((error, client, done) => {
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text, UNIQUE id)', (error, result) => {
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text, UNIQUE (id))', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
