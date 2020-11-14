@@ -70,7 +70,6 @@ client.on('guildCreate', async (guild) => {
             }
 
             return result.rows;
-            done();
         })
 
         client.query('COMMIT', (error, result) => {
@@ -80,6 +79,7 @@ client.on('guildCreate', async (guild) => {
             }
 
             return result.rows;
+            done();
         })
     });
 });
@@ -99,8 +99,6 @@ client.on('message', async (message) => {
             }
 
             client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
-                done();
-
                 if (error) {
                     logger.error(error);
                     return;
