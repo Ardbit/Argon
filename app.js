@@ -33,15 +33,8 @@ client.on('ready', async () => {
     client.user.setActivity(`${client.guilds.cache.size} servers | argon.js.org`, { type: 'WATCHING' })
         .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
         .catch(console.error);
-});
 
-client.on('guildCreate', async (guild) => {
     await db.connect((error, client, done) => {
-        if (error) {
-            logger.error(error);
-            return;
-        }
-
         client.query('CREATE TABLE guilds (id bigint, config text) ON CONFLICT DO NOTHING', (error, result) => {
             if (error) {
                 logger.error(error)
@@ -50,6 +43,24 @@ client.on('guildCreate', async (guild) => {
 
             return result.rows;
         })
+
+        client.query('COMMIT', error => {
+            if (error) {
+                logger.error(error);
+                return;
+            }
+        })
+
+        done();
+    })
+});
+
+client.on('guildCreate', async (guild) => {
+    await db.connect((error, client, done) => {
+        if (error) {
+            logger.error(error);
+            return;
+        }
 
         client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [guild.id, {prefix: '.'}], (error, result) => {
 
@@ -60,6 +71,15 @@ client.on('guildCreate', async (guild) => {
 
             return result.rows;
             done();
+        })
+
+        client.query('COMMIT', (error, result) => {
+            if (error) {
+                logger.error(error);
+                return;
+            }
+
+            return result.rows;
         })
     });
 });
@@ -85,6 +105,15 @@ client.on('message', async (message) => {
         client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
             done();
 
+            if (error) {
+                logger.error(error);
+                return;
+            }
+
+            return result.rows;
+        })
+
+        client.query('COMMIT', (error, result) => {
             if (error) {
                 logger.error(error);
                 return;
