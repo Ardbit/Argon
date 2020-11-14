@@ -114,15 +114,13 @@ client.on('message', async (message) => {
                 return result.rows;
             })
 
-            client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+            return client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
                 }
 
-                console.log(result.rows)
-
-                return result.rows[0];
+                return result.rows[0].config;
                 done();
             });
         });
