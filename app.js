@@ -99,7 +99,7 @@ client.on('message', async (message) => {
                 return;
             }
 
-            return result.rows[0];
+            return result.rows[0].config;
             done();
         });
     });
