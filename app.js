@@ -36,83 +36,80 @@ client.on('ready', async () => {
 });
 
 client.on('guildCreate', async (guild) => {
-    await db.connect((error, dbclient, done) => {
-        const shouldAbort = error => {
-            if (error) {
-                logger.error(`Error in transaction`);
-                dbclient.query('ROLLBACK', error => {
-                    if (error) {
-                        logger.error(`Error when rolling back client: ${error.stack}`)
-                    }
-
-                    done()
-                })
-            }
-
-            return !!error;
+    await db.connect((error, client, done) => {
+        if (error) {
+            logger.error(error);
+            return;
         }
 
-        dbclient.query('BEGIN', error => {
-            if (shouldAbort(error)) return
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
+            if (error) {
+                logger.error(error)
+                return;
+            }
 
-            dbclient.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, prefix text)', (error, res) => {
-                if (shouldAbort(error)) return;
-
-                dbclient.query('COMMIT', (error, res) => {
-                    if (shouldAbort(error)) return;
-                })
-            })
-
-            dbclient.query('INSERT INTO guilds (id, prefix) VALUES ($1, $2)', [guild.id, '.'], (error, res) => {
-                if (shouldAbort(error)) return;
-
-                done()
-            })
+            return result.rows;
         })
-    })
+
+        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2)', [guild.id, {prefix: '.'}], (error, result) => {
+            done();
+
+            if (error) {
+                logger.error(error);
+                return;
+            }
+
+            return result.rows;
+        })
+    });
 });
 
 client.on('message', async (message) => {
     if (message.author.bot) return;
 
-    const prefix = await db.connect((error, dbclient, done) => {
-        const shouldAbort = error => {
-            if (error) {
-                logger.error(`Error in transaction`);
-                dbclient.query('ROLLBACK', error => {
-                    if (error) {
-                        logger.error(`Error when rolling back client: ${error.stack}`)
-                    }
-
-                    done()
-                })
-            }
-
-            return !!error;
+    const config = await db.connect((error, client, done) => {
+        if (error) {
+            logger.error(error);
+            return;
         }
 
-        dbclient.query('BEGIN', error => {
-            if (shouldAbort(error)) return
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
+            if (error) {
+                logger.error(error)
+                return;
+            }
 
-          dbclient.query('SELECT prefix FROM guilds WHERE guildId = $1 RETURNING prefix', message.guild.id, (error, res) => {
-                if (shouldAbort(error)) return;
+            client.query('INSERT INTO guilds (id, config) VALUES ($1, $2)', [message.guild.id, { prefix: '.' }], (error, result) => {
+                done();
 
-                if (!res.row[0].prefix) {
-                    return '.';
-                } else {
-                    return res.rows[0].prefix;
+                if (error) {
+                    logger.error(error);
+                    return;
                 }
 
-                done()
+                return result.rows;
             })
+
+            return result.rows;
         })
-    })
+
+        client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+            done();
+
+            if (error) {
+                logger.error(error);
+                return;
+            }
+
+            return result.rows[0];
+        });
+    });
 
     const messageArray = message.content.split(' ');
     const cmd = messageArray[0];
     const args = messageArray.slice(1);
 
-    if (!message.content.startsWith(prefix)) return;
+    if (!message.content.startsWith(config.prefix)) return;
 
     const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
     commandfile.run(client, message, args, logger);
