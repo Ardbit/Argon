@@ -120,7 +120,7 @@ client.on('message', async (message) => {
                     return;
                 }
 
-                return result.rows[0].config;
+                return result.rows[0]['config'];
                 done();
             });
         });
