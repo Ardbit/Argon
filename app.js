@@ -42,7 +42,7 @@ client.on('guildCreate', async (guild) => {
             return;
         }
 
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
+        client.query('CREATE TABLE guilds (id bigint, config text) ON CONFLICT DO NOTHING', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
@@ -73,7 +73,7 @@ client.on('message', async (message) => {
             return;
         }
 
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config json)', (error, result) => {
+        client.query('CREATE TABLE guilds (id bigint, config json) ON CONFLICT DO NOTHING', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
