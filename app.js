@@ -30,10 +30,6 @@ loadCommands(client);
 client.on('ready', async () => {
     logger.info(`Connected as ${client.user.tag}`)
 
-    client.user.setActivity(`${client.guilds.cache.size} servers | argon.js.org`, { type: 'WATCHING' })
-        .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
-        .catch(console.error);
-
     await db.connect((error, client, done) => {
         client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text, UNIQUE (id))', (error, result) => {
             if (error) {
@@ -53,7 +49,17 @@ client.on('ready', async () => {
 
         done();
     })
+
+    setInterval(() => {
+        client.user.setActivity(`${client.guilds.cache.size} servers | argon.js.org`, { type: 'WATCHING' })
+            .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
+            .catch(console.error);
+    }, 10000)
 });
+
+client.on('ratelimited', async () => {
+    logger.warn('Client has just been ratelimited!')
+})
 
 client.on('guildCreate', async (guild) => {
     await db.connect((error, client, done) => {
