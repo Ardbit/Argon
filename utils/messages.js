@@ -17,7 +17,7 @@ function ArgonSuccess(message, description, remove = false, timeout = 3000) {
         .setDescription(description)
         .setColor(0x38A700)).then(msg => {
             if (remove) {
-                msg.delete(timeout)
+                msg.delete({timeout})
             }
         });
 }
