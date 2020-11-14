@@ -88,7 +88,7 @@ client.on('message', async (message) => {
     try {
         if (message.author.bot) return;
 
-        const config = {
+        let config = {
             prefix: '.'
         }
 
