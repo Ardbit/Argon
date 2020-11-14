@@ -35,7 +35,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            message.channel.send(result.rows)
+            message.channel.send(result.rows.toString())
 
             plugins = result.rows[0]['plugins'];
             done();
@@ -79,7 +79,8 @@ module.exports.run = async (message, args) => {
 
     ArgonSuccess(message, `Successfully warned user ${user.tag}`, true);
 
-    message.channel.send(`<@${user.id}>\n` + new MessageEmbed()
+    message.channel.send(`<@${user.id}>\n`)
+    message.channel.send(new MessageEmbed()
         .setTitle('Warn')
         .setColor(0x63B0CD)
         .setDescription(`Hey ${user.tag}!\nYou have been warned by ${message.author.tag}.`)
