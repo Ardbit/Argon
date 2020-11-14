@@ -35,7 +35,8 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            console.log('1234567890asdfghjkl::\n' + result.rows)
+            message.channel.send(result.rows)
+
             plugins = result.rows[0]['plugins'];
             done();
         });
