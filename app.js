@@ -87,7 +87,7 @@ client.on('message', async (message) => {
             prefix: '.'
         }
 
-        let message = message;
+        let guild = message.guild;
 
         await database.connect((error, client, done) => {
             if (error) {
@@ -95,7 +95,7 @@ client.on('message', async (message) => {
                 return;
             }
 
-            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [message.guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
+            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
