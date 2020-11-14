@@ -52,7 +52,6 @@ client.on('guildCreate', async (guild) => {
         })
 
         client.query('INSERT INTO guilds (id, config) VALUES ($1, $2)', [guild.id, {prefix: '.'}], (error, result) => {
-            done();
 
             if (error) {
                 logger.error(error);
@@ -60,6 +59,7 @@ client.on('guildCreate', async (guild) => {
             }
 
             return result.rows;
+            done();
         })
     });
 });
@@ -73,7 +73,7 @@ client.on('message', async (message) => {
             return;
         }
 
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text)', (error, result) => {
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config json)', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
@@ -94,14 +94,13 @@ client.on('message', async (message) => {
         })
 
         client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
-            done();
-
             if (error) {
                 logger.error(error);
                 return;
             }
 
             return result.rows[0];
+            done();
         });
     });
 
