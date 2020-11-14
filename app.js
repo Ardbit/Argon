@@ -61,7 +61,7 @@ client.on('guildCreate', async (guild) => {
             return result.rows;
             done();
         })
-    }).catch((error) => logger.error(error));
+    });
 });
 
 client.on('message', async (message) => {
@@ -102,7 +102,7 @@ client.on('message', async (message) => {
             return result.rows[0].config;
             done();
         });
-    }).catch((error) => logger.error(error));
+    });
 
     const messageArray = message.content.split(' ');
     const cmd = messageArray[0];
