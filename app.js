@@ -51,7 +51,7 @@ client.on('guildCreate', async (guild) => {
             return result.rows;
         })
 
-        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2)', [guild.id, {prefix: '.'}], (error, result) => {
+        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [guild.id, {prefix: '.'}], (error, result) => {
 
             if (error) {
                 logger.error(error);
@@ -79,16 +79,16 @@ client.on('message', async (message) => {
                 return;
             }
 
-            client.query('INSERT INTO guilds (id, config) VALUES ($1, $2)', [message.guild.id, { prefix: '.' }], (error, result) => {
-                done();
+            return result.rows;
+        })
 
-                if (error) {
-                    logger.error(error);
-                    return;
-                }
+        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
+            done();
 
-                return result.rows;
-            })
+            if (error) {
+                logger.error(error);
+                return;
+            }
 
             return result.rows;
         })
