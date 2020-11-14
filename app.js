@@ -130,7 +130,7 @@ client.on('message', async (message) => {
         const args = messageArray.slice(1);
 
         //if(!message.content.startsWith(config.prefix)) return;
-        logger.debug(config)
+        logger.info('DEBUG: ' + config)
 
         const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
         commandfile.run(client, message, args, logger);
