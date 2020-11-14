@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 
-const ArgonError = async (message, description, remove = false, timeout = 3000) => {
+async function ArgonError(message, description, remove = false, timeout = 3000) {
     message.channel.send(new MessageEmbed()
         .setTitle('Error')
         .setDescription(description)
@@ -11,7 +11,7 @@ const ArgonError = async (message, description, remove = false, timeout = 3000) 
         });
 }
 
-const ArgonSuccess = async (message, description, remove = false, timeout = 3000) => {
+async function ArgonSuccess(message, description, remove = false, timeout = 3000) {
     message.channel.send(new MessageEmbed()
         .setTitle('Success')
         .setDescription(description)
