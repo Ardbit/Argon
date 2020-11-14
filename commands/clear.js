@@ -15,12 +15,12 @@ module.exports.run = async (client, message, args, logger) => {
         ArgonError(message, 'Delete count cannot be greater than 100.', true)
     }
 
+    message.channel.bulkDelete(1) // Fix over 100 messages error.
+
     message.channel.bulkDelete(deleteCount).then(msg => {
         ArgonSuccess(message, `Successfully deleted ${deleteCount} messages.`, true)
     })
         .catch(error => ArgonError(message, `Unable to delete messages:\n${error}`));
-
-    message.channel.bulkDelete(1)
 }
 
 module.exports.config = {
