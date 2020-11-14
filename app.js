@@ -85,55 +85,59 @@ client.on('guildCreate', async (guild) => {
 });
 
 client.on('message', async (message) => {
-    if (message.author.bot) return;
+    try {
+        if (message.author.bot) return;
 
-    const config = await db.connect((error, client, done) => {
-        if (error) {
-            logger.error(error);
-            return;
-        }
-
-        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
-            done();
-
+        const config = await db.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
             }
 
-            return result.rows;
-        })
+            client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [message.guild.id, { prefix: '.' }], (error, result) => {
+                done();
 
-        client.query('COMMIT', (error, result) => {
-            if (error) {
-                logger.error(error);
-                return;
-            }
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
 
-            return result.rows;
-        })
+                return result.rows;
+            })
 
-        client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
-            if (error) {
-                logger.error(error);
-                return;
-            }
+            client.query('COMMIT', (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
 
-            return result.rows[0].config;
-            done();
+                return result.rows;
+            })
+
+            client.query('SELECT config FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows[0].config;
+                done();
+            });
         });
-    });
 
-    const messageArray = message.content.split(' ');
-    const cmd = messageArray[0];
-    const args = messageArray.slice(1);
+        const messageArray = message.content.split(' ');
+        const cmd = messageArray[0];
+        const args = messageArray.slice(1);
 
-    //if(!message.content.startsWith(config.prefix)) return;
-    logger.debug(config)
+        //if(!message.content.startsWith(config.prefix)) return;
+        logger.debug(config)
 
-    const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
-    commandfile.run(client, message, args, logger);
-}.catch (error => logger.error(error)));
+        const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
+        commandfile.run(client, message, args, logger);
+    } catch (error) {
+        logger.error(error);
+    }
+});
 
 // EOF
 client.login(process.env.DISCORD_TOKEN);
