@@ -11,7 +11,11 @@ module.exports.run = async (client, message, args, logger) => {
         ArgonError(message, 'User does not exist.', true)
     }
 
-    const reason = args[1];
+    let reason = ' ';
+
+    for (let i = 1; i < args.length - 1; i++) {
+        reason = reason + args[i] + ' '
+    }
 
     user.kick(reason);
 

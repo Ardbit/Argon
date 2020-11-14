@@ -52,7 +52,6 @@ client.on('ready', async () => {
 
     setInterval(() => {
         client.user.setActivity(`${client.guilds.cache.size} servers | argon.js.org`, { type: 'WATCHING' })
-            .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
             .catch(console.error);
     }, 10000)
 });

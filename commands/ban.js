@@ -11,10 +11,13 @@ module.exports.run = async (client, message, args, logger) => {
         ArgonError(message, 'User does not exist.', true)
     }
 
-    const reason = args[1]
-    const days = args[2] || 0;
+    let reason = ' ';
 
-    user.ban({ days, reason });
+    for (let i = 1; i < args.length - 1; i++) {
+        reason = reason + args[i] + ' '
+    }
+
+    user.ban({ reason });
 
     ArgonSuccess(message, `Successfully banned user ${user.tag}`, true);
 }
