@@ -82,6 +82,12 @@ client.on('guildCreate', async (guild) => {
             done();
         })
     });
+
+    guild.systemChannel.send(new MessageEmbed()
+        .setTitle('Thank you')
+        .setColor(0xEFCA08)
+        .setDescription('Thank you for adding me!\n`-` The default prefix is `.`\n`-` Type `.help` for information.\n`-` You can customise settings with `.settings`.\n`-` If you need help, join our support server at https://argon.js.org/support \n**By integrating Argon into your server, you agree to our Terms and Conditions: https://argon.js.org/tos**')
+    )
 });
 
 client.on('message', async (message) => {
