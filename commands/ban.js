@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args, logger) => {
         ArgonError(message, 'Insufficient privileges.', true)
     }
 
-    const user = message.mentions.users.first();
+    const user = message.mentions.members.first();
 
     if (!user) {
         ArgonError(message, 'User does not exist.', true)
