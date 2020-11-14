@@ -62,7 +62,7 @@ client.on('guildCreate', async (guild) => {
             return;
         }
 
-        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [guild.id, {prefix: '.'}], (error, result) => {
+        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [guild.id, { prefix: '.' }], (error, result) => {
 
             if (error) {
                 logger.error(error);
@@ -120,17 +120,23 @@ client.on('message', async (message) => {
                     return;
                 }
 
-                return result.rows[0].config;
+                return result.rows[0];
                 done();
             });
         });
+
+        if (!config) {
+            logger.error(`Failed getting config for server '${message.guild.id}'. Defaulting to '.'`)
+            const prefix = '.';
+        } else {
+            const prefix = config.prefix;
+        }
 
         const messageArray = message.content.split(' ');
         const cmd = messageArray[0];
         const args = messageArray.slice(1);
 
-        //if(!message.content.startsWith(config.prefix)) return;
-        logger.info('DEBUG: ' + config)
+        if (!message.content.startsWith(prefix)) return;
 
         const commandfile = client.commands.get(cmd.slice(prefix.length)) || client.commands.get(client.aliases.get(cmd.slice(prefix.length)));
         commandfile.run(client, message, args, logger);
