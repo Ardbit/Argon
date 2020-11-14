@@ -1,7 +1,8 @@
 const { Collection } = require('discord.js');
 
 const { loadCommands } = require('./utils/loadCommands');
-const { client, database, logger }, defaults = require('./utils/defaults');
+const { client, database, logger } = require('./utils/defaults');
+const defaults = require('./utils/defaults');
 
 // Collections
 client.commands = new Collection();
