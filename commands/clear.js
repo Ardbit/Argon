@@ -1,6 +1,6 @@
 const { ArgonError, ArgonSuccess } = require('../utils/messages')
 
-module.exports.run = async (client, message, args, logger) => {
+module.exports.run = async (message, args) => {
     if (!message.member.hasPermission('MANAGE_MESSAGES')) {
         ArgonError(message, 'Insufficient privileges.', true)
     }

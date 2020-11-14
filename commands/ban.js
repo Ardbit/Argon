@@ -1,6 +1,6 @@
 const { ArgonError, ArgonSuccess } = require('../utils/messages');
 
-module.exports.run = async (client, message, args, logger) => {
+module.exports.run = async (message, args) => {
     if (!message.member.hasPermission('BAN_MEMBERS')) {
         ArgonError(message, 'Insufficient privileges.', true)
     }
@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args, logger) => {
 
     let reason = ' ';
 
-    for (let i = 1; i < args.length - 1; i++) {
+    for (let i = 1; i < args.length; i++) {
         reason = reason + args[i] + ' '
     }
 

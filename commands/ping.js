@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
+const { client } = require('../utils/defaults');
 
-module.exports.run = async (client, message, args, logger) => {
+module.exports.run = async (message, args) => {
     message.channel.send(new MessageEmbed()
         .setTitle(':ping_pong:   **Pong!**')
         .setColor(0x31CB00)

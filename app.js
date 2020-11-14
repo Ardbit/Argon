@@ -1,26 +1,9 @@
-const { Client, Collection } = require('discord.js');
-const winston = require('winston');
-const { Pool } = require('pg');
+const { Collection } = require('discord.js');
 
 const { loadCommands } = require('./utils/loadCommands');
+const { client, database, logger } = require('./utils/defaults');
 
-const logger = winston.createLogger({
-    format: winston.format.simple(),
-    transports: [
-        new winston.transports.Console()
-    ]
-});
-
-// Setup variables
-const client = new Client();
-const db = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false,
-    },
-});
-
-// Commands
+// Collections
 client.commands = new Collection();
 client.aliases = new Collection();
 
@@ -30,8 +13,8 @@ loadCommands(client);
 client.on('ready', async () => {
     logger.info(`Connected as ${client.user.tag}`)
 
-    await db.connect((error, client, done) => {
-        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config text, UNIQUE (id))', (error, result) => {
+    await database.connect((error, client, done) => {
+        client.query('CREATE TABLE IF NOT EXISTS guilds (id bigint, config json, plugins json, UNIQUE (id))', (error, result) => {
             if (error) {
                 logger.error(error)
                 return;
@@ -61,13 +44,13 @@ client.on('ratelimited', async () => {
 })
 
 client.on('guildCreate', async (guild) => {
-    await db.connect((error, client, done) => {
+    await database.connect((error, client, done) => {
         if (error) {
             logger.error(error);
             return;
         }
 
-        client.query('INSERT INTO guilds (id, config) VALUES ($1, $2) ON CONFLICT DO NOTHING', [guild.id, { prefix: '.' }], (error, result) => {
+        client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, { prefix: '.' }, defaults.PLUGIN_JSON], (error, result) => {
 
             if (error) {
                 logger.error(error);
@@ -103,7 +86,7 @@ client.on('message', async (message) => {
             prefix: '.'
         }
 
-        await db.connect((error, client, done) => {
+        await database.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
@@ -145,7 +128,7 @@ client.on('message', async (message) => {
         if (!message.content.startsWith(config['prefix'] || '.')) return;
 
         const commandfile = client.commands.get(cmd.slice(config['prefix'].length || '.'.length)) || client.commands.get(client.aliases.get(cmd.slice(config['prefix'].length)));
-        commandfile.run(client, message, args, logger);
+        commandfile.run(message, args);
     } catch (error) {
         logger.error(error);
     }
