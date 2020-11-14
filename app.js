@@ -14,7 +14,7 @@ const logger = winston.createLogger({
 // Setup variables
 const client = new Client();
 const db = new Pool({
-    connectionString: process.env.DATABASE_URI,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false,
     },
