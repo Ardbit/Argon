@@ -21,7 +21,7 @@ module.exports.run = async (message, args) => {
 
     let warnCount;
 
-    database.connect((error, client, done) => {
+    await database.connect((error, client, done) => {
         if (error) {
             logger.error(error);
             return;
@@ -40,7 +40,7 @@ module.exports.run = async (message, args) => {
             plugins = result.rows[0]['plugins'];
             done();
         });
-
+        /*
         let newPlugins = plugins['moderation']['warns'][user.id][plugins['moderation']['warns'][user.id].length];
 
         newPlugins['timestamp'] = Date.now()
@@ -71,9 +71,11 @@ module.exports.run = async (message, args) => {
             }
 
             warnCount = result.rows[0]['plugins']['moderation']['warns'][user.id].length;
-            done();
-        });
+            done();*/
+        //});
     });
+
+    warnCount = 10;
 
     ArgonSuccess(message, `Successfully warned user ${user.tag}`, true);
 
