@@ -35,7 +35,7 @@ module.exports.run = async (message, args, logger) => {
 
             return result;
         })
-
+        /*
         if (!warns[user.id]) {
             warns[user.id] = []
         }
@@ -53,7 +53,7 @@ module.exports.run = async (message, args, logger) => {
             }
 
             return result.rows[0];
-        })
+        })*/
 
         return warns
     }));
