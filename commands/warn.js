@@ -26,7 +26,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
+            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [message.guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
