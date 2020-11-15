@@ -45,13 +45,13 @@ module.exports.run = async (message, args) => {
                 return result.rows;
             })
 
-            let warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+            let warn = client.query('SELECT * FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
                 }
 
-                return result.rows[0]['moderation']['warns'];
+                return result.rows[0]['plugins']['moderation']['warns'];
                 done();
             });
 
