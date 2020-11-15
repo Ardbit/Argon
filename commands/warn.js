@@ -34,7 +34,13 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            return JSON.parse(result.rows[0])['moderation']['warns'];
+            let res = JSON.parse(result.rows[0])['moderation']['warns'];
+
+            if (res != undefined) {
+                return res;
+            } else {
+                ArgonError(message, 'Unable to retreive and set warns.')
+            }
             done();
         });
 
