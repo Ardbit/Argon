@@ -34,7 +34,6 @@ module.exports.run = async (message, args, logger) => {
             }
 
             if (result == null) {
-                ArgonError(message, 'A fatal error has occured.\nPlease kick and reinvite Argon.')
                 return null;
             }
 
@@ -68,6 +67,7 @@ module.exports.run = async (message, args, logger) => {
     });
 
     if (warnCount == null) {
+        ArgonError(message, 'A fatal error has occured.\nPlease kick and reinvite Argon.')
         return;
     }
 
