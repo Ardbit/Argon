@@ -35,7 +35,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            warn = result.rows[0]['plugins'];
+            warn = result.rows[0];
             done();
         });
 
