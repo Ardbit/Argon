@@ -37,16 +37,14 @@ module.exports.run = async (message, args) => {
 
             message.channel.send(result.rows.toString())
 
-            plugins = result.rows[0]['plugins'];
+            warn = result.rows[0]['plugins'];
             done();
         });
-        /*
-        let newPlugins = plugins['moderation']['warns'][user.id][plugins['moderation']['warns'][user.id].length];
 
-        newPlugins['timestamp'] = Date.now()
-        newPlugins['reason'] = reason || null;
+        warn['moderation']['warns'][user.id][warn['moderation']['warns'][user.id].length]['timestamp'] = Date.now()
+        warn['moderation']['warns'][user.id][warn['moderation']['warns'][user.id].length]['reason'] = reason || null;
 
-        client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [newPlugins, message.guild.id], (error, result) => {
+        client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
             if (error) {
                 logger.error(error);
                 return;
@@ -71,8 +69,8 @@ module.exports.run = async (message, args) => {
             }
 
             warnCount = result.rows[0]['plugins']['moderation']['warns'][user.id].length;
-            done();*/
-        //});
+            done();
+        });
     });
 
     warnCount = 10;
@@ -81,10 +79,10 @@ module.exports.run = async (message, args) => {
 
     message.channel.send(`<@${user.id}>\n`)
     message.channel.send(new MessageEmbed()
-        .setTitle('Warn')
+        .setTitle(`Hey, ${user}!`)
         .setColor(0x63B0CD)
-        .setDescription(`Hey ${user.tag}!\nYou have been warned by ${message.author.tag}.`)
-        .addField('Reason', reason)
+        .setDescription(`You have been warned by ${message.author.tag}.`)
+        .addField('Reason', reason || 'None')
         .setFooter(`Warning count: ${warnCount}`)
     )
 }
