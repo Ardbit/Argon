@@ -3,39 +3,59 @@ const { database } = require('../utils/defaults');
 const { MessageEmbed } = require('discord.js');
 
 module.exports.run = async (message, args) => {
-    if (!message.member.hasPermission('KICK_MEMBERS')) {
-        ArgonError(message, 'Insufficient privileges.', true)
-    }
-
-    const user = message.mentions.members.first();
-
-    if (!user) {
-        ArgonError(message, 'User does not exist.', true)
-    }
-
-    let reason = ' ';
-
-    for (let i = 1; i < args.length; i++) {
-        reason = reason + args[i] + ' '
-    }
-
-    let warnCount;
-    let warn;
-
-    await database.connect((error, client, done) => {
-        if (error) {
-            logger.error(error);
-            return;
+    try {
+        if (!message.member.hasPermission('KICK_MEMBERS')) {
+            ArgonError(message, 'Insufficient privileges.', true)
         }
 
-        warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+        const user = message.mentions.members.first();
+
+        if (!user) {
+            ArgonError(message, 'User does not exist.', true)
+        }
+
+        let reason = ' ';
+
+        for (let i = 1; i < args.length; i++) {
+            reason = reason + args[i] + ' '
+        }
+
+        let warnCount;
+        let warn;
+
+        await database.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
             }
 
-            return result.rows[0]['moderation']['warns'];
-            done();
+            warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows[0]['moderation']['warns'];
+                done();
+            });
+
+            client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows;
+            })
+
+            client.query('COMMIT', (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows;
+            })
         });
 
         if (!warn || warn == null) {
@@ -50,47 +70,21 @@ module.exports.run = async (message, args) => {
         warn[user.id][warn[user.id].length].set('reason', reason || null);
         warn[user.id][warn[user.id].length].set('issuer', message.member.id || null);
 
-        client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
-            if (error) {
-                logger.error(error);
-                return;
-            }
+        warnCount = warn[user.id].length + 1;
 
-            return result.rows;
-        })
+        ArgonSuccess(message, `Successfully warned user ${user.tag}`, true);
 
-        client.query('COMMIT', (error, result) => {
-            if (error) {
-                logger.error(error);
-                return;
-            }
-
-            return result.rows;
-        })
-
-        client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
-            if (error) {
-                logger.error(error);
-                return;
-            }
-
-            warnCount = result.rows[0]['plugins']['moderation']['warns'][user.id].length;
-            done();
-        });
-    });
-
-    warnCount = 10;
-
-    ArgonSuccess(message, `Successfully warned user ${user.tag}`, true);
-
-    message.channel.send(`<@${user.id}>\n`)
-    message.channel.send(new MessageEmbed()
-        .setTitle(`Hey, ${user}!`)
-        .setColor(0x63B0CD)
-        .setDescription(`You have been warned by ${message.author.tag}.`)
-        .addField('Reason', reason || 'None')
-        .setFooter(`Warning count: ${warnCount}`)
-    )
+        message.channel.send(`<@${user.id}>\n`)
+        message.channel.send(new MessageEmbed()
+            .setTitle(`Hey, ${user}!`)
+            .setColor(0x63B0CD)
+            .setDescription(`You have been warned by ${message.author.tag}.`)
+            .addField('Reason', reason || 'None')
+            .setFooter(`Warning count: ${warnCount}`)
+        )
+    } catch (error) {
+        ArgonError(message, 'Something went wrong.')
+    }
 }
 
 module.exports.config = {
