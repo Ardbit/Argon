@@ -29,13 +29,13 @@ module.exports.run = async (message, args) => {
 
         let warn;
 
-        client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+        warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
             if (error) {
                 logger.error(error);
                 return;
             }
 
-            warn = JSON.parse(result.rows[0])['moderation']['warns'];
+            return JSON.parse(result.rows[0])['moderation']['warns'];
             done();
         });
 
