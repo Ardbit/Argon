@@ -70,6 +70,11 @@ module.exports.run = async (message, args) => {
                 return
             }
 
+            if (warn == null || warn.length <= 0) {
+                logger.error('Warn is null or less than 0');
+                return;
+            }
+
             client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
