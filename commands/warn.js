@@ -33,7 +33,7 @@ module.exports.run = async (message, args, logger) => {
                 ArgonError(message, 'A database error has occured.')
             }
 
-            if (!result) {
+            if (result == null) {
                 ArgonError(message, 'A fatal error has occured.\nPlease kick and reinvite Argon.')
                 return null;
             }
