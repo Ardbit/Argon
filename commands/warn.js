@@ -103,6 +103,7 @@ module.exports.run = async (message, args) => {
             .setFooter(`Warning count: ${warnCount}`)
         )
     } catch (error) {
+        logger.error(error)
         ArgonError(message, 'Something went wrong.')
     }
 }
