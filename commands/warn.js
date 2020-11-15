@@ -58,8 +58,8 @@ module.exports.run = async (message, args) => {
             return warn;
         });
 
-        warn.set(user.id, [])
-        warn[user.id].set(warn[user.id].length, defaults.plugins.moderation.warns.DEFAULT_WARN_JSON_TEMPLATE);
+        warn[user.id] = []
+        warn[user.id][warn[user.id].length] = defaults.plugins.moderation.warns.DEFAULT_WARN_JSON_TEMPLATE;
 
         warn[user.id][warn[user.id].length].timestamp = Date.now();
         warn[user.id][warn[user.id].length].reason = reason || null;
@@ -88,6 +88,8 @@ module.exports.run = async (message, args) => {
 
                 return result.rows;
             })
+
+            done();
         })
 
         let warnCount = warn[user.id].length + 1;
