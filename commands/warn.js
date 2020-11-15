@@ -29,13 +29,11 @@ module.exports.run = async (message, args) => {
 
         let warn;
 
-        client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+        client.query('SELECT plugins FROM guilds WHERE id = $1 RETURNING plugins', [message.guild.id], (error, result) => {
             if (error) {
                 logger.error(error);
                 return;
             }
-
-            message.channel.send(result.rows.toString())
 
             warn = result.rows[0]['plugins'];
             done();
