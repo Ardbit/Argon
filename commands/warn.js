@@ -27,7 +27,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [message.guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
+            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [message.guild.id, defaults.CONFIG_JSON_DB, defaults.PLUGIN_JSON_DB], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
@@ -59,11 +59,11 @@ module.exports.run = async (message, args) => {
         });
 
         warn.set(user.id, [])
-        warn[user.id].set(warn[user.id].length, defaults['plugins']['moderation']['warns']['DEFAULT_WARN_JSON_TEMPLATE']);
+        warn[user.id].set(warn[user.id].length, defaults.plugins.moderation.warns.DEFAULT_WARN_JSON_TEMPLATE);
 
-        warn[user.id][warn[user.id].length].set('timestamp', Date.now());
-        warn[user.id][warn[user.id].length].set('reason', reason || null);
-        warn[user.id][warn[user.id].length].set('issuer', message.member.id || null);
+        warn[user.id][warn[user.id].length].timestamp = Date.now();
+        warn[user.id][warn[user.id].length].reason = reason || null;
+        warn[user.id][warn[user.id].length].issuer = message.member.id || null;
 
         database.connect((error, client, done) => {
             if (error) {
