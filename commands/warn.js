@@ -33,7 +33,7 @@ module.exports.run = async (message, args, logger) => {
                 ArgonError(message, 'A database error has occured.')
             }
 
-            message.reply(result)
+            message.reply(result.rows)
 
             return result.rows[0].plugins.moderation.warns;
         })
