@@ -26,6 +26,24 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
+            client.query('INSERT INTO guilds (id, config, plugins) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', [guild.id, defaults['CONFIG_JSON_DB'], defaults['PLUGIN_JSON_DB']], (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows;
+            })
+
+            client.query('COMMIT', (error, result) => {
+                if (error) {
+                    logger.error(error);
+                    return;
+                }
+
+                return result.rows;
+            })
+
             let warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
@@ -35,6 +53,27 @@ module.exports.run = async (message, args) => {
                 return result.rows[0]['moderation']['warns'];
                 done();
             });
+
+            return warn;
+        });
+
+        if (!warn || warn == null) {
+            ArgonError(message, 'Unable to retreive and set warnings.');
+            return;
+        }
+
+        warn.set(user.id, [])
+        warn[user.id].set(warn[user.id].length, defaults['plugins']['moderation']['warns']['DEFAULT_WARN_JSON_TEMPLATE']);
+
+        warn[user.id][warn[user.id].length].set('timestamp', Date.now());
+        warn[user.id][warn[user.id].length].set('reason', reason || null);
+        warn[user.id][warn[user.id].length].set('issuer', message.member.id || null);
+
+        database.connect((error, client, done) => {
+            if (error) {
+                logger.error(error)
+                return
+            }
 
             client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
                 if (error) {
@@ -53,21 +92,7 @@ module.exports.run = async (message, args) => {
 
                 return result.rows;
             })
-
-            return warn;
-        });
-
-        if (!warn || warn == null) {
-            ArgonError(message, 'Unable to retreive and set warnings.');
-            return;
-        }
-
-        warn.set(user.id, [])
-        warn[user.id].set(warn[user.id].length, defaults['plugins']['moderation']['warns']['DEFAULT_WARN_JSON_TEMPLATE']);
-
-        warn[user.id][warn[user.id].length].set('timestamp', Date.now());
-        warn[user.id][warn[user.id].length].set('reason', reason || null);
-        warn[user.id][warn[user.id].length].set('issuer', message.member.id || null);
+        })
 
         let warnCount = warn[user.id].length + 1;
 
