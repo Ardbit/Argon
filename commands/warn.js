@@ -58,11 +58,6 @@ module.exports.run = async (message, args) => {
             return warn;
         });
 
-        if (!warn || warn == null) {
-            ArgonError(message, 'Unable to retreive and set warnings.');
-            return;
-        }
-
         warn.set(user.id, [])
         warn[user.id].set(warn[user.id].length, defaults['plugins']['moderation']['warns']['DEFAULT_WARN_JSON_TEMPLATE']);
 
