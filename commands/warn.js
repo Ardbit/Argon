@@ -21,7 +21,7 @@ module.exports.run = async (message, args) => {
             reason = reason + args[i] + ' '
         }
 
-        let warn = await database.connect((error, client, done) => {
+        let warn, result = await database.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
@@ -51,12 +51,14 @@ module.exports.run = async (message, args) => {
                     return;
                 }
 
-                return result.rows[0]['plugins']['moderation']['warns'];
+                return result.rows[0]['plugins']['moderation']['warns'], result;
                 done();
             });
 
-            return warn;
+            return warn, result;
         });
+
+        console.warn(result)
 
         try {
             if (warn[user.id]) {
@@ -67,8 +69,7 @@ module.exports.run = async (message, args) => {
                 }
             }
         } catch (error) {
-            logger.error(error + '\n\n' + warn)
-
+            logger.error(error)
             warn[user.id] = [{
                 timestamp: Date.now(),
                 reason: reason || null,
