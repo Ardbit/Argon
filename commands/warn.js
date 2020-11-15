@@ -67,7 +67,7 @@ module.exports.run = async (message, args) => {
                 }
             }
         } catch (error) {
-            logger.error(error + '\n\n' + warn.toString())
+            logger.error(error + '\n\n' + warn)
 
             warn[user.id] = [{
                 timestamp: Date.now(),
