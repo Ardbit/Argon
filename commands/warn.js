@@ -58,18 +58,22 @@ module.exports.run = async (message, args) => {
             return warn;
         });
 
-        if (!warn[user.id]) {
+        try {
+            if (warn[user.id]) {
+                warn[user.id][warn[user.id].length || 0] = {
+                    timestamp: Date.now(),
+                    reason: reason || null,
+                    issuer: message.member.id || null
+                }
+            }
+        } catch (error) {
+            logger.error(error)
+
             warn[user.id] = [{
                 timestamp: Date.now(),
                 reason: reason || null,
                 issuer: message.member.id || null
             }]
-        } else {
-            warn[user.id][warn[user.id].length || 0] = {
-                timestamp: Date.now(),
-                reason: reason || null,
-                issuer: message.member.id || null
-            }
         }
 
         database.connect((error, client, done) => {
