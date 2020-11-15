@@ -38,8 +38,12 @@ module.exports.run = async (message, args) => {
             done();
         });
 
-        warn[user.id][warn['moderation']['warns'][user.id].length]['timestamp'] = Date.now()
-        warn[user.id][warn['moderation']['warns'][user.id].length]['reason'] = reason || null;
+        warn[user.id] = []
+        warn[user.id][warn[user.id].length] = defaults['plugins']['moderation']['warns']['DEFAULT_WARN_JSON_TEMPLATE'];
+
+        warn[user.id][warn[user.id].length]['timestamp'] = Date.now();
+        warn[user.id][warn[user.id].length]['reason'] = reason || null;
+        warn[user.id][warn[user.id].length]['issuer'] = message.member.id || null;
 
         client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
             if (error) {

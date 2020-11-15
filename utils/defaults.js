@@ -12,6 +12,17 @@ module.exports = {
     },
     'CONFIG_JSON_DB': {
         'prefix': '.'
+    },
+    'plugins': {
+        'moderation': {
+            'warns': {
+                'DEFAULT_WARN_JSON_TEMPLATE': {
+                    'timestamp': null,
+                    'reason': null,
+                    'issuer': null
+                }
+            }
+        }
     }
 }
 
