@@ -57,6 +57,7 @@ module.exports.run = async (message, args, logger) => {
 
         return warns
     }));
+    return;
 
     ArgonSuccess(message, 'Successfully warned ' + user.tag)
 
