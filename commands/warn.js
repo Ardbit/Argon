@@ -20,14 +20,13 @@ module.exports.run = async (message, args) => {
     }
 
     let warnCount;
+    let warn;
 
     await database.connect((error, client, done) => {
         if (error) {
             logger.error(error);
             return;
         }
-
-        let warn;
 
         warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
             if (error) {
