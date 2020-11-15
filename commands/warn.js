@@ -58,12 +58,21 @@ module.exports.run = async (message, args) => {
             return warn;
         });
 
-        warn[user.id] = []
-        warn[user.id][warn[user.id].length] = defaults.plugins.moderation.warns.DEFAULT_WARN_JSON_TEMPLATE;
+        if (!warn[user.id]) {
+            warn[user.id] = [
+                {
+                    timestamp: Date.now(),
+                    reason: reason || null,
+                    issuer: message.member.id || null
+                }
+            ]
+        } else {
+            warn[user.id][warn[user.id].length] = defaults.plugins.moderation.warns.DEFAULT_WARN_JSON_TEMPLATE;
 
-        warn[user.id][warn[user.id].length].timestamp = Date.now();
-        warn[user.id][warn[user.id].length].reason = reason || null;
-        warn[user.id][warn[user.id].length].issuer = message.member.id || null;
+            warn[user.id][warn[user.id].length].timestamp = Date.now();
+            warn[user.id][warn[user.id].length].reason = reason || null;
+            warn[user.id][warn[user.id].length].issuer = message.member.id || null;
+        }
 
         database.connect((error, client, done) => {
             if (error) {
