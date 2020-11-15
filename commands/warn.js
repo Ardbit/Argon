@@ -29,18 +29,18 @@ module.exports.run = async (message, args) => {
 
         let warn;
 
-        client.query('SELECT plugins FROM guilds WHERE id = $1 RETURNING plugins', [message.guild.id], (error, result) => {
+        client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
             if (error) {
                 logger.error(error);
                 return;
             }
 
-            warn = result.rows[0];
+            warn = JSON.parse(result.rows[0])['moderation']['warns'];
             done();
         });
 
-        warn['moderation']['warns'][user.id][warn['moderation']['warns'][user.id].length]['timestamp'] = Date.now()
-        warn['moderation']['warns'][user.id][warn['moderation']['warns'][user.id].length]['reason'] = reason || null;
+        warn[user.id][warn['moderation']['warns'][user.id].length]['timestamp'] = Date.now()
+        warn[user.id][warn['moderation']['warns'][user.id].length]['reason'] = reason || null;
 
         client.query('UPDATE guilds SET plugins = $1 WHERE id = $2', [warn, message.guild.id], (error, result) => {
             if (error) {
