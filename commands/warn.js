@@ -26,7 +26,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            warn = client.query('SELECT plugins FROM guilds WHERE id = $1', [message.guild.id], (error, result) => {
+            let warn = client.query('SELECT plugins FROM guilds WHERE id = $1 RETURNING plugins', [message.guild.id], (error, result) => {
                 if (error) {
                     logger.error(error);
                     return;
