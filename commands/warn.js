@@ -34,7 +34,7 @@ module.exports.run = async (message, args) => {
                 return;
             }
 
-            return JSON.parse(result.rows[0])['moderation']['warns'];
+            return result.rows[0]['moderation']['warns'];
             done();
         });
 
