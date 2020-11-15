@@ -21,7 +21,7 @@ module.exports.run = async (message, args, logger) => {
         ArgonError(message, 'Invalid Syntax:\nYou need to mention a user.', true)
     }
 
-    message.reply(await database.connect((error, client, done) => {
+    const warnCount = await database.connect((error, client, done) => {
         if (error) {
             logger.error(error)
             ArgonError(message, 'A database error has occured.')
@@ -35,11 +35,16 @@ module.exports.run = async (message, args, logger) => {
 
             if (!result) {
                 ArgonError(message, 'A fatal error has occured.\nPlease kick and reinvite Argon.')
+                return null;
             }
 
             return result;
         })
-        /*
+
+        if (warns == null) {
+            return null;
+        }
+        
         if (!warns[user.id]) {
             warns[user.id] = []
         }
@@ -57,11 +62,14 @@ module.exports.run = async (message, args, logger) => {
             }
 
             return result.rows[0];
-        })*/
+        })
 
-        return warns
-    }));
-    return;
+        return warns[user.id].length
+    });
+
+    if (warnCount == null) {
+        return;
+    }
 
     ArgonSuccess(message, 'Successfully warned ' + user.tag)
 
