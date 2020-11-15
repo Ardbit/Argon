@@ -20,10 +20,7 @@ module.exports.run = async (message, args) => {
             reason = reason + args[i] + ' '
         }
 
-        let warnCount;
-        let warn;
-
-        await database.connect((error, client, done) => {
+        let warn = await database.connect((error, client, done) => {
             if (error) {
                 logger.error(error);
                 return;
@@ -56,6 +53,8 @@ module.exports.run = async (message, args) => {
 
                 return result.rows;
             })
+
+            return warn;
         });
 
         if (!warn || warn == null) {
@@ -70,7 +69,7 @@ module.exports.run = async (message, args) => {
         warn[user.id][warn[user.id].length].set('reason', reason || null);
         warn[user.id][warn[user.id].length].set('issuer', message.member.id || null);
 
-        warnCount = warn[user.id].length + 1;
+        let warnCount = warn[user.id].length + 1;
 
         ArgonSuccess(message, `Successfully warned user ${user.tag}`, true);
 
